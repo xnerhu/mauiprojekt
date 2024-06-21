@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:mauiprojekt"
+             x:Class="mauiprojekt.TaskListView"
+                  x:Name="taskPage"
+             Title="Task List">
+
+    <ContentPage.BindingContext>
+        <local:TaskListViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <!-- <Label Text="{Binding debugText}"></Label>-->
+        <ListView x:Name="x"
+                  Grid.Row="0"
+                  ItemsSource="{Binding Tasks}"
+                  ItemTapped="OnItemTapped"
+                  HasUnevenRows="True">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Text="Edit" 
+                                      Command="{Binding Path=BindingContext.EditTaskCommand, Source={x:Reference taskPage}}"
+                                      CommandParameter="{Binding .}" />
+                            <MenuItem Text="Remove" 
+                                      Command="{Binding Path=BindingContext.RemoveTaskCommand, Source={x:Reference taskPage}}"
+                                      CommandParameter="{Binding .}" 
+                                      IsDestructive="True"/>
+                            <MenuItem Text="Completed" 
+                                      Command="{Binding Path=BindingContext.CompleteTaskCommand, Source={x:Reference taskPage}}"
+                                      CommandParameter="{Binding .}" 
+                                      IsDestructive="True"/>
+                        </ViewCell.ContextActions>
+                        <Frame Padding="10"
+                               Margin="5"
+                               CornerRadius="5"
+                               BorderColor="LightGray">
+                            <Frame.Triggers>
+                                <DataTrigger TargetType="Frame" Binding="{Binding IsImportant}" Value="True">
+                                    <Setter Property="BorderColor" Value="Red" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Frame" Binding="{Binding IsCompleted}" Value="True">
+                                    <Setter Property="BorderColor" Value="Green" />
+                                </DataTrigger>
+                            </Frame.Triggers>
+                            <StackLayout Spacing="4">
+                                <Label Text="{Binding CreatedAt, StringFormat='{0:yyyy-MM-dd HH:mm:ss}'}"
+                                       FontSize="12"
+                                       TextColor="Gray" 
+                                       VerticalOptions="Center"/>
+                                <Label Text="{Binding Title}"
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       VerticalOptions="Center" />
+                                <Label Text="{Binding Description}"
+                                       FontSize="14"
+                                       TextColor="Black"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Button x:Name="FloatingActionButton"
+                Grid.Row="1"
+                Clicked="OnFabClicked"
+                WidthRequest="56"
+                HeightRequest="56"
+                CornerRadius="28"
+                BackgroundColor="Blue"
+                Text="+"
+                TextColor="White"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,16,16" />
+    </Grid>
+</ContentPage>
